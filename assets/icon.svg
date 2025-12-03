@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Gradient for the gauge background -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gradient for the gauge arc -->
+    <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGradient)" stroke="#2d3748" stroke-width="8"/>
+  
+  <!-- Outer ring -->
+  <circle cx="256" cy="256" r="220" fill="none" stroke="#374151" stroke-width="4" opacity="0.5"/>
+  
+  <!-- Gauge track (background arc) -->
+  <path d="M 76 316 A 200 200 0 1 1 436 316" 
+        fill="none" 
+        stroke="#374151" 
+        stroke-width="32" 
+        stroke-linecap="round"/>
+  
+  <!-- Gauge fill (colored arc) - showing ~70% -->
+  <path d="M 76 316 A 200 200 0 1 1 380 140" 
+        fill="none" 
+        stroke="url(#arcGradient)" 
+        stroke-width="32" 
+        stroke-linecap="round"
+        filter="url(#glow)"/>
+  
+  <!-- Tick marks -->
+  <g stroke="#6b7280" stroke-width="3" opacity="0.6">
+    <!-- 0% -->
+    <line x1="90" y1="300" x2="110" y2="285" />
+    <!-- 25% -->
+    <line x1="100" y1="180" x2="125" y2="190" />
+    <!-- 50% -->
+    <line x1="256" y1="70" x2="256" y2="95" />
+    <!-- 75% -->
+    <line x1="412" y1="180" x2="387" y2="190" />
+    <!-- 100% -->
+    <line x1="422" y1="300" x2="402" y2="285" />
+  </g>
+  
+  <!-- Center circle -->
+  <circle cx="256" cy="280" r="60" fill="#1f2937" stroke="#4b5563" stroke-width="4"/>
+  
+  <!-- Needle -->
+  <g transform="rotate(45, 256, 280)">
+    <polygon points="256,120 248,270 264,270" fill="#f97316" filter="url(#glow)"/>
+    <circle cx="256" cy="280" r="20" fill="#f97316"/>
+    <circle cx="256" cy="280" r="12" fill="#1f2937"/>
+  </g>
+  
+  <!-- CC Text -->
+  <text x="256" y="380" 
+        font-family="Arial, sans-serif" 
+        font-size="72" 
+        font-weight="bold" 
+        fill="#e5e7eb" 
+        text-anchor="middle">CC</text>
+  
+  <!-- Small decorative dots -->
+  <circle cx="256" cy="420" r="6" fill="#22c55e"/>
+  <circle cx="230" cy="420" r="4" fill="#f59e0b"/>
+  <circle cx="282" cy="420" r="4" fill="#ef4444"/>
+</svg>

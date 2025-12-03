@@ -1,0 +1,108 @@
+name: Build CCGauge
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., 1.0.0)'
+        required: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
+          - os: ubuntu-latest
+            platform: linux
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for ${{ matrix.platform }}
+        run: npm run electron:build:${{ matrix.platform }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Windows artifacts
+        if: matrix.platform == 'win'
+        uses: actions/upload-artifact@v4
+        with:
+          name: CCGauge-Windows
+          path: |
+            release/*.exe
+            !release/*-unpacked
+          retention-days: 5
+
+      - name: Upload macOS artifacts
+        if: matrix.platform == 'mac'
+        uses: actions/upload-artifact@v4
+        with:
+          name: CCGauge-macOS
+          path: |
+            release/*.dmg
+            release/*.zip
+          retention-days: 5
+
+      - name: Upload Linux artifacts
+        if: matrix.platform == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: CCGauge-Linux
+          path: |
+            release/*.AppImage
+            release/*.deb
+          retention-days: 5
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List artifacts
+        run: find artifacts -type f
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: CCGauge v${{ github.event.inputs.version }}
+          body: |
+            ## Downloads
+            
+            | Platform | File |
+            |----------|------|
+            | Windows | `CCGauge-Setup-${{ github.event.inputs.version }}.exe` |
+            | macOS | `CCGauge-${{ github.event.inputs.version }}.dmg` |
+            | Linux | `CCGauge-${{ github.event.inputs.version }}.AppImage` |
+            
+            ### Installation
+            - **Windows**: Run the `.exe` installer or use portable version
+            - **macOS**: Open `.dmg` and drag to Applications
+            - **Linux**: Make `.AppImage` executable and run, or install `.deb`
+          files: |
+            artifacts/CCGauge-Windows/*
+            artifacts/CCGauge-macOS/*
+            artifacts/CCGauge-Linux/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
