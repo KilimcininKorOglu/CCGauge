@@ -37,8 +37,9 @@
   "build": {
     "appId": "com.ccgauge.app",
     "productName": "CCGauge",
+    "publish": null,
     "mac": {
-      "icon": "assets/icon.icns",
+      "icon": "assets/icon.png",
       "category": "public.app-category.utilities",
       "target": [
         {
