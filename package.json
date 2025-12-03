@@ -4,8 +4,8 @@
   "description": "System tray app for Claude Code usage tracking",
   "main": "dist-electron/main.js",
   "author": {
-    "name": "CCGauge",
-    "email": "ccgauge@users.noreply.github.com"
+    "name": "Kilimcinin Kör Oğlu",
+    "email": "k@keremgok.tr"
   },
   "license": "MIT",
   "scripts": {
